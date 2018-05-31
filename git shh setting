@@ -1,0 +1,101 @@
+
+配置git全局配置之后，在其他项目不应用改配置。
+1. 进入隐藏的 .git 文件
+` ls -all `
+通过cd .git 进入该目录，发现该目录下有个config文件
+` vim gitconfig `
+添加如下配置：
+
+```
+[user]
+    name = XXX(姓名)
+    email = XXXX(邮箱)
+
+```
+
+or
+手动配置
+
+```
+
+git  config  user.name  "xxxxx"
+git  config  user.email  "xxxxx"
+
+```
+
+#### git 多平台和多账号配置
+
+生成 ssh keys
+1、任意目录下右击鼠标选择Git Bash Here或者win+r输入cmd回车打开终端；
+2、在改终端下输入命令：
+ssh-keygen -t rsa -C "youname@example.com"
+这时可以一路回车，不输入任何字符，将会在C:\Users\Administrator\.ssh下自动生成id_rsa和id_rsa.pub文件。
+
+
+github添加SSH keys
+将id_rsa.pub里面的内容复制下来，在github上的settings里面找到add keys，将其粘贴到key即可，title唯一即可随便填，建议写有意义的;
+具体过程如图：
+
+
+测试
+在控制台上测试一下，输入：
+ssh -T git@github.com
+只要看到最后一行Hi chenlianjiang! You've successfully authenticated, but GitHub does not provide shell access，说明验证成功了
+
+
+
+生成其他平台 ssh keys
+这时候在生成ssh key时候要注意了这时一路回车，不输入任何字符在绑定gitlibng的ssh key时，会发现将github的ssh key覆盖了；不要着急，下面跟着我一起操作。
+打开终端，终端下输入命令：
+ssh-keygen -t rsa -C "youname@example.com"
+这时，给这个文件起一个名字， 比如叫C:\Users\Administrator\.ssh\ id_rsa_gitlib, 所以相应的也会生成一个 id_rsa_gitlib.pub 文件。
+
+
+添加私钥
+终端输入一下命令：
+$ ssh-add ~/.ssh/id_rsa
+$ ssh-add ~/.ssh/id_rsa_gitlib
+ssh-add命令是把专用密钥添加到ssh-agent的高速缓存中。该命令位置在/usr/bin/ssh-add
+  如果出现Could not open a connection to your authentication agent.错误提示先执行$ ssh-agent.exe bash，然后执行上面命令；
+    -D：删除ssh-agent中的所有密钥.
+    -d：从ssh-agent中的删除密钥
+    -e pkcs11：删除PKCS#11共享库pkcs1提供的钥匙。
+    -s pkcs11：添加PKCS#11共享库pkcs1提供的钥匙。
+    -L：显示ssh-agent中的公钥
+    -l：显示ssh-agent中的密钥
+    -t life：对加载的密钥设置超时时间，超时ssh-agent将自动卸载密钥
+    -X：对ssh-agent进行解锁
+    -x：对ssh-agent进行加锁
+
+添加配置文件
+在~/.ssh/目录下新建config文件
+
+
+gitlib添加SSH keys
+将id_rsa_gitlib.pub里面的内容复制下来，在gitlib上的账户里面找到所示SSH keys，将其粘贴到key内容即可，Title唯一即可随便填，，点击添加需要输入登录密码；
+
+
+在控制台上测试一下，输入：
+ssh -T git@域名
+只要看到最后一行Welcome to GitLab, chenlj!，说明验证成功了
+
+
+
+
+
+/config 配置demo/
+# 该文件用于配置私钥对应的服务器
+# Default github user(1039024144@qq.com)
+
+Host github.com
+ HostName github.com
+ User H3108
+ IdentityFile ~/.ssh/id_rsa
+
+# second user(jackie3108@126.com)
+# 建一个github别名，新建的帐号使用这个别名做克隆和更新
+
+Host conding.net
+ HostName git.conding.net
+ User hao3108
+ IdentityFile ~/.ssh/id_rsa_coding
